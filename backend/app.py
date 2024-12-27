@@ -1,4 +1,5 @@
 import openai
+import google.generativeai as genai  # google.generativeai をインポート
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from openai import OpenAI
@@ -20,9 +21,14 @@ db = SQLAlchemy(app)
 openai_api_key = os.environ.get('OPENAI_API_KEY')
 client = OpenAI(api_key=openai_api_key)
 
+# 環境変数からGemini APIキーを取得
+gemini_api_key = os.environ.get('GEMINI_API_KEY')
+genai.configure(api_key=gemini_api_key)  # APIキーを設定
+# Geminiのモデルを指定 (関数の外で定義)
+gemini_model = genai.GenerativeModel("gemini-1.5-pro")
 
 # AI APIとの通信処理を行う関数を定義
-def get_ai_response(ai_name, message):
+def get_ai_response(ai_name, message, chat_history=None):
     if ai_name == 'ChatGPT':
         try:
             # ChatGPT APIを呼び出す
@@ -40,8 +46,20 @@ def get_ai_response(ai_name, message):
             print(f"ChatGPT APIエラー: {e}")
             return "ChatGPT APIとの通信でエラーが発生しました。"
     elif ai_name == 'Gemini':
-        # Gemini APIとの通信処理
-        response = "Geminiの回答です。"  # ← Gemini APIを呼び出すコードに置き換える
+        try:
+            if chat_history is None:  # chat_history が None の場合
+                chat_history = []  # 空のリストで初期化
+            # Gemini APIを呼び出す
+            chat = genai.start_chat(
+                model="models/gemini-1.5-pro",  # モデルを指定
+                history=chat_history  # 履歴を指定
+            )
+            response = chat.send_message(message)
+            # レスポンスから回答テキストを抽出
+            return response.text, chat.history  # 履歴を返す
+        except Exception as e:  # Gemini APIのエラー処理
+            print(f"Gemini APIエラー: {e}")
+            return "Gemini APIとの通信でエラーが発生しました。", None  # 履歴を None で返す
     elif ai_name == 'Claude':
         # Claude APIとの通信処理
         response = "Claudeの回答です。"  # ← Claude APIを呼び出すコードに置き換える
