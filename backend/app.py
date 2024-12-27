@@ -28,7 +28,7 @@ genai.configure(api_key=gemini_api_key)  # APIキーを設定
 gemini_model = genai.GenerativeModel("gemini-1.5-pro")
 
 # AI APIとの通信処理を行う関数を定義
-def get_ai_response(ai_name, message, chat_history=None):
+def get_ai_response(ai_name, message):
     if ai_name == 'ChatGPT':
         try:
             # ChatGPT APIを呼び出す
@@ -47,16 +47,9 @@ def get_ai_response(ai_name, message, chat_history=None):
             return "ChatGPT APIとの通信でエラーが発生しました。"
     elif ai_name == 'Gemini':
         try:
-            if chat_history is None:  # chat_history が None の場合
-                chat_history = []  # 空のリストで初期化
-            # Gemini APIを呼び出す
-            chat = genai.start_chat(
-                model="models/gemini-1.5-pro",  # モデルを指定
-                history=chat_history  # 履歴を指定
-            )
-            response = chat.send_message(message)
+            response = gemini_model.generate_content(message)
             # レスポンスから回答テキストを抽出
-            return response.text, chat.history  # 履歴を返す
+            return response.text
         except Exception as e:  # Gemini APIのエラー処理
             print(f"Gemini APIエラー: {e}")
             return "Gemini APIとの通信でエラーが発生しました。", None  # 履歴を None で返す
