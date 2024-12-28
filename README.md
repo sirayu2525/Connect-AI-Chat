@@ -75,7 +75,7 @@ AIモデルのバージョン管理
 
 
 【ディレクトリ構成】
-connext_ai_chat/  # プロジェクトルートディレクトリ
+connect_ai_chat/  # プロジェクトルートディレクトリ
 ├── frontend/  # フロントエンドのコード
 │   ├── public/  # 静的ファイル
 │   │   └── index.html  # メインのHTMLファイル

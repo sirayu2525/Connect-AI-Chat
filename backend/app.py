@@ -2,6 +2,7 @@ import openai
 import google.generativeai as genai  # google.generativeai をインポート
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
@@ -10,6 +11,7 @@ import os
 load_dotenv(override=True)
 
 app = Flask(__name__)
+CORS(app)  # CORSを有効にする
 
 # 環境変数からデータベースの接続情報を取得
 db_uri = os.environ.get('DATABASE_URL')
