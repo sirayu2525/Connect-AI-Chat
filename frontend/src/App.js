@@ -14,10 +14,11 @@ function App() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message, selectedAI }), // selectedAIをそのまま送信
+        body: JSON.stringify({ message, selectedAI }),
       });
 
       if (!response.ok) {
+        console.error(`HTTP エラー! ステータス: ${response.status} ${response.statusText}`); // エラーログを追加
         throw new Error('メッセージの送信に失敗しました');
       }
 
@@ -25,6 +26,7 @@ function App() {
       setResponses(data);
     } catch (error) {
       console.error(error);
+      alert(`エラーが発生しました: ${error.message}`); // エラーメッセージを表示
       // TODO: エラー処理
     }
   };

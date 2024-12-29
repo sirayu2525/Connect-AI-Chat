@@ -15,7 +15,7 @@ function MessageForm({ onSend }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    onSend(message, selectedAI);  // onSend プロパティを呼び出す
+    onSend(message, selectedAI);  // onSend props を呼び出す
     setMessage('');  // 送信後にメッセージをクリア
   };
 
